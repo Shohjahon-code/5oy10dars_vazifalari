@@ -9,24 +9,24 @@ from schemas import DoctorCreate, DoctorResponse, PatientCreate, PatientResponse
 from database import *
 
 
-async def cr(doc: DoctorCreate, db: AsyncSession):
+async def create_doctor(doc: DoctorCreate, db: AsyncSession):
     db_doc = Doctor(**doc.model_dump())
     db.add(db_doc)
     await db.commit()
     await db.refresh(db_doc)
     return db_doc
 
-async def doc(db: AsyncSession):
+async def get_doctor_all(db: AsyncSession):
     result = await db.execute(select(Doctor))
     return result.scalars().all()
 
-async def doc2(doctor_id: int, db: AsyncSession):
+async def get_doctor(doctor_id: int, db: AsyncSession):
     doctor = await db.get(Doctor, doctor_id)
     if not doctor:
         raise HTTPException(status_code=404, detail="not fond")
     return doctor
 
-async def updat(doctor_id: int, doc: DoctorCreate, db: AsyncSession):
+async def update_doctor(doctor_id: int, doc: DoctorCreate, db: AsyncSession):
     doctor = await db.get(Doctor, doctor_id)
     if not doctor:
         raise HTTPException(status_code=404, detail="Doctor not found")
@@ -36,7 +36,7 @@ async def updat(doctor_id: int, doc: DoctorCreate, db: AsyncSession):
     await db.refresh(doctor)
     return doctor
 
-async def dele(doctor_id: int, db: AsyncSession):
+async def delete_doctor(doctor_id: int, db: AsyncSession):
     doctor = await db.get(Doctor, doctor_id)
     if not doctor:
         raise HTTPException(status_code=404, detail="Doctor not found")
@@ -45,7 +45,10 @@ async def dele(doctor_id: int, db: AsyncSession):
     return doctor
 
 
-async def creap(pat: PatientCreate, db: AsyncSession, image:UploadFile=None, video:UploadFile=None):
+# ----------------------------------------------------------
+
+
+async def create_patient(pat: PatientCreate, db: AsyncSession, image:UploadFile=None, video:UploadFile=None):
     if image:
         image_extension = image.filename.lower().split(".")[-1]
         if image_extension not in ["jpg", "jpeg", "png"]:
@@ -85,11 +88,11 @@ async def creap(pat: PatientCreate, db: AsyncSession, image:UploadFile=None, vid
 
 
 
-async def rel(db: AsyncSession):
+async def get_patient_all(db: AsyncSession):
     result = await db.execute(select(Patient))
     return result.scalars().all()
 
-async def oq(patient_id: int, db: AsyncSession):
+async def get_patient_one(patient_id: int, db: AsyncSession):
     patient = await db.get(Patient, patient_id)
     if not patient:
         raise HTTPException(status_code=404, detail="Patient not found")
@@ -98,7 +101,7 @@ async def oq(patient_id: int, db: AsyncSession):
 
 
 
-async def updat(patient_id: int, pat: PatientCreate, db: AsyncSession):
+async def update_patient(patient_id: int, pat: PatientCreate, db: AsyncSession):
     patient = await db.get(Patient, patient_id)
     if not patient:
         raise HTTPException(status_code=404, detail="Patient not found")
@@ -111,7 +114,7 @@ async def updat(patient_id: int, pat: PatientCreate, db: AsyncSession):
 
 
 
-async def delen(patient_id: int, db: AsyncSession):
+async def delete_patient(patient_id: int, db: AsyncSession):
     patient = await db.get(Patient, patient_id)
     if not patient:
         raise HTTPException(status_code=404, detail="not found")
@@ -119,5 +122,6 @@ async def delen(patient_id: int, db: AsyncSession):
     await db.delete(patient)
     await db.commit()
     return patient
+
 
 

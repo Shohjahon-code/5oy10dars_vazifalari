@@ -19,48 +19,48 @@ async def startup():
 
 
 @app.get("/doctors/", response_model=list[DoctorResponse])
-async def doctors(db: AsyncSession = Depends(get_db)):
-    return await crud.read_doctors(db)
+async def get_doctor(db: AsyncSession = Depends(get_db)):
+    return await crud.get_doctor_all(db)
 
 @app.get("/doctors/{doctor_id}", response_model=DoctorResponse)
-async def doctor2(doctor_id: int, db: AsyncSession = Depends(get_db)):
-    return await crud.read_doctor(doctor_id, db)
+async def get_doctors(doctor_id: int, db: AsyncSession = Depends(get_db)):
+    return await crud.get_doctor(doctor_id, db)
 
 
 
 
 @app.post("/doctors/", response_model=DoctorResponse)
-async def pos(doc: DoctorCreate, db: AsyncSession = Depends(get_db)):
+async def create_doktor(doc: DoctorCreate, db: AsyncSession = Depends(get_db)):
     return await crud.create_doctor(doc, db)
 
 
 @app.put("/doctors/{doctor_id}", response_model=DoctorResponse)
-async def upd(doctor_id: int, doc: DoctorCreate, db: AsyncSession = Depends(get_db)):
+async def update_doktor(doctor_id: int, doc: DoctorCreate, db: AsyncSession = Depends(get_db)):
     return await crud.update_doctor(doctor_id, doc, db)
 
 
 
 @app.delete("/doctors/{doctor_id}")
-async def delet(doctor_id: int, db: AsyncSession = Depends(get_db)):
+async def delete_doktor(doctor_id: int, db: AsyncSession = Depends(get_db)):
     return await crud.delete_doctor(doctor_id, db)
 
 
 
 
 
-
+#-----------------------------------------------------------------------------------------------------------------------------
 
 
 
 
 @app.get("/patients/", response_model=list[PatientResponse])
-async def ol(db: AsyncSession = Depends(get_db)):
-    return await crud.read_patients(db)
+async def get_patients(db: AsyncSession = Depends(get_db)):
+    return await crud.get_patient_all(db)
 
 
 @app.get("/patients/{patient_id}", response_model=PatientResponse)
-async def olmoq(patient_id: int, db: AsyncSession = Depends(get_db)):
-    return await crud.read_patient(patient_id, db)
+async def get_patient(patient_id: int, db: AsyncSession = Depends(get_db)):
+    return await crud.get_patient_one(patient_id, db)
 
 
 
@@ -68,7 +68,6 @@ async def olmoq(patient_id: int, db: AsyncSession = Depends(get_db)):
 @app.post("/patients/", response_model=PatientResponse)
 async def kirit(pat: PatientCreate, db: AsyncSession = Depends(get_db)):
     return await crud.create_patient(pat, db)
-
 
 
 
@@ -85,17 +84,6 @@ async def ochir(patient_id: int, db: AsyncSession = Depends(get_db)):
 
 
 
-@app.post("/patient/", response_model=PatientResponse)
-async def postin(
-        full_name: str = Form(...),
-        age: int = Form(...),
-        doctor_id: int = Form(...),
-        image: UploadFile  = None,
-        video: UploadFile = None,
-        db: AsyncSession = Depends(get_db)
-):
-    patient = PatientCreate(full_name=full_name, age=age,doctor_id=doctor_id, image=image, video=video, db=db)
-    return await crud.creap(patient, db, image, video)
     
 
 
